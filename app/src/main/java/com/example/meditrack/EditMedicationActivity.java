@@ -33,6 +33,7 @@ public class EditMedicationActivity extends AppCompatActivity {
         EditText txtFrequency = findViewById(R.id.txtFrequency);
         EditText txtStock = findViewById(R.id.txtStock);
         Button btnUpdateMedication = findViewById(R.id.btnUpdateMedication);
+        Button btnRefill = findViewById(R.id.btnRefill); // ✅ new button
 
         // Build DB
         AppDatabase db = Room.databaseBuilder(
@@ -59,10 +60,10 @@ public class EditMedicationActivity extends AppCompatActivity {
         // Pre-fill fields
         txtMedicationName.setText(med.name);
         txtDosage.setText(med.dosage);
-        txtStock.setText(String.valueOf(med.stock)); // PRE-FILL stock
+        txtStock.setText(String.valueOf(med.stock));
 
         // Extract saved time if available
-        String rawTime = med.time.split(" ")[0]; // e.g. "08:00"
+        String rawTime = med.time.split(" ")[0];
         txtTime.setText(rawTime);
 
         try {
@@ -71,7 +72,7 @@ public class EditMedicationActivity extends AppCompatActivity {
             selectedMinute = Integer.parseInt(parts[1]);
         } catch (Exception ignored) {}
 
-        // Pre-fill frequency (extract number from "every Xh")
+        // Pre-fill frequency
         int frequencyHours = 24;
         if (med.time.contains("every")) {
             try {
@@ -136,7 +137,7 @@ public class EditMedicationActivity extends AppCompatActivity {
             med.name = name;
             med.dosage = dosage;
             med.time = String.format("%02d:%02d (every %dh)", selectedHour, selectedMinute, freq);
-            med.stock = stock; // UPDATE stock
+            med.stock = stock;
             db.medicationDao().update(med);
 
             // Cancel old WorkManager job
@@ -147,6 +148,14 @@ public class EditMedicationActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Medication updated", Toast.LENGTH_SHORT).show();
             finish();
+        });
+
+        // ✅ Refill button logic
+        btnRefill.setOnClickListener(v -> {
+            med.stock += 10; // increase stock by 10
+            db.medicationDao().update(med);
+            txtStock.setText(String.valueOf(med.stock));
+            Toast.makeText(this, "Stock refilled by 10 (" + med.stock + " total)", Toast.LENGTH_SHORT).show();
         });
     }
 

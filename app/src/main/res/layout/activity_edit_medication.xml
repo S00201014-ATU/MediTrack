@@ -52,5 +52,13 @@
             android:layout_height="wrap_content"
             android:text="Update Medication" />
 
+        <Button
+            android:id="@+id/btnRefill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Refill Stock"
+            android:layout_marginTop="12dp" />
+
+
     </LinearLayout>
 </ScrollView>

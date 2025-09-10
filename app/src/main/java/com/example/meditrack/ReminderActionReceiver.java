@@ -1,12 +1,12 @@
 package com.example.meditrack;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
 import androidx.room.Room;
-import androidx.work.WorkManager;
 
 public class ReminderActionReceiver extends BroadcastReceiver {
 
@@ -28,35 +28,52 @@ public class ReminderActionReceiver extends BroadcastReceiver {
         // Save log to History
         History history = new History();
         history.medicationId = medId;
-        history.name = medName;
         history.dosage = dosage;
-        history.status = action.equals("ACTION_TAKEN") ? "Taken" : "Missed";
         history.timestamp = System.currentTimeMillis();
 
-        db.historyDao().insert(history);
+        if ("ACTION_TAKEN".equals(action)) {
+            history.status = "Taken";
 
-        // If Taken, reduce stock
-        if (action.equals("ACTION_TAKEN")) {
-            Medication med = db.medicationDao().getById(medId);
-            if (med != null) {
-                med.stock = Math.max(0, med.stock - 1); // avoid negative
-                db.medicationDao().update(med);
+            // Decrement stock
+            Medication medication = db.medicationDao().getById(medId); // ✅ fixed here
+            if (medication != null) {
+                medication.stock -= 1;
+                db.medicationDao().update(medication);
 
-                if (med.stock == 0) {
-                    // Cancel reminders
-                    WorkManager.getInstance(context).cancelAllWorkByTag("med_" + medId);
+                // Low stock warning (≤ 3 and > 0)
+                if (medication.stock <= 3 && medication.stock > 0) {
+                    NotificationManager notificationManager =
+                            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                    // Notify user
-                    Toast.makeText(context,
-                            medName + " is out of stock. Reminders cancelled.",
-                            Toast.LENGTH_LONG).show();
-                    return;
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "medication_reminder_channel")
+                            .setSmallIcon(android.R.drawable.stat_sys_warning)
+                            .setContentTitle("Low Stock Warning")
+                            .setContentText(medication.name + " is running low (" + medication.stock + " left).")
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setAutoCancel(true);
+
+                    notificationManager.notify(medId + 2000, builder.build());
+                }
+
+                // Out of stock notification
+                if (medication.stock <= 0) {
+                    NotificationManager notificationManager =
+                            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "medication_reminder_channel")
+                            .setSmallIcon(android.R.drawable.stat_notify_error)
+                            .setContentTitle("Out of Stock")
+                            .setContentText(medication.name + " has run out of stock.")
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setAutoCancel(true);
+
+                    notificationManager.notify(medId + 3000, builder.build());
                 }
             }
+        } else if ("ACTION_MISSED".equals(action)) {
+            history.status = "Missed";
         }
 
-        // Show quick feedback for both Taken and Missed
-        String msg = medName + " marked as " + history.status;
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+        db.historyDao().insert(history);
     }
 }
