@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btnAddMedication = findViewById(R.id.btnAddMedication);
+        Button btnViewHistory = findViewById(R.id.btnViewHistory);
         recyclerView = findViewById(R.id.recyclerMedications);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -29,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
         btnAddMedication.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddMedicationActivity.class);
+            startActivity(intent);
+        });
+
+        btnViewHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             startActivity(intent);
         });
     }
@@ -46,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         ).allowMainThreadQueries().build();
 
         List<Medication> medications = db.medicationDao().getAll();
-        adapter = new MedicationAdapter(medications, this); // pass context
+        adapter = new MedicationAdapter(medications, this); // pass context for delete
         recyclerView.setAdapter(adapter);
     }
 }

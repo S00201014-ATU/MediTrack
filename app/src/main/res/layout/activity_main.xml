@@ -22,10 +22,18 @@
         android:text="Add Medication"
         android:layout_marginTop="20dp" />
 
+    <!-- Button to view history -->
+    <Button
+        android:id="@+id/btnViewHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View History"
+        android:layout_marginTop="10dp" />
+
+    <!-- RecyclerView to show medications -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerMedications"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="20dp"/>
-
 </LinearLayout>
