@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -84,6 +85,11 @@ public class AddMedicationActivity extends AppCompatActivity {
                         .addTag("med_" + medId) // tag for cancellation later
                         .build();
 
-        WorkManager.getInstance(this).enqueue(reminderRequest);
+        // Unique work ensures persistence across reboot and avoids duplicates
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "med_" + medId,
+                ExistingPeriodicWorkPolicy.REPLACE,
+                reminderRequest
+        );
     }
 }
