@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         AppDatabase db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class, "medication-db"
-        ).allowMainThreadQueries().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         List<Medication> medications = db.medicationDao().getAll();
         adapter = new MedicationAdapter(medications, this); // pass context for delete

@@ -13,4 +13,5 @@ public class Medication {
     public String name;
     public String dosage;
     public String time;
+    public int stock;
 }

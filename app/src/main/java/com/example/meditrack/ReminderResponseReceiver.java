@@ -19,7 +19,7 @@ public class ReminderResponseReceiver extends BroadcastReceiver {
         AppDatabase db = Room.databaseBuilder(
                 context,
                 AppDatabase.class, "medication-db"
-        ).allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         History history = new History();
         history.medicationId = medId;

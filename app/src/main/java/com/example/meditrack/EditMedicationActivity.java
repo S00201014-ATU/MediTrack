@@ -31,13 +31,14 @@ public class EditMedicationActivity extends AppCompatActivity {
         EditText txtDosage = findViewById(R.id.txtDosage);
         EditText txtTime = findViewById(R.id.txtTime);
         EditText txtFrequency = findViewById(R.id.txtFrequency);
+        EditText txtStock = findViewById(R.id.txtStock);
         Button btnUpdateMedication = findViewById(R.id.btnUpdateMedication);
 
         // Build DB
         AppDatabase db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class, "medication-db"
-        ).allowMainThreadQueries().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         // Get medId from Intent
         medId = getIntent().getIntExtra("medId", -1);
@@ -58,6 +59,7 @@ public class EditMedicationActivity extends AppCompatActivity {
         // Pre-fill fields
         txtMedicationName.setText(med.name);
         txtDosage.setText(med.dosage);
+        txtStock.setText(String.valueOf(med.stock)); // PRE-FILL stock
 
         // Extract saved time if available
         String rawTime = med.time.split(" ")[0]; // e.g. "08:00"
@@ -105,6 +107,7 @@ public class EditMedicationActivity extends AppCompatActivity {
             String name = txtMedicationName.getText().toString();
             String dosage = txtDosage.getText().toString();
             String freqText = txtFrequency.getText().toString();
+            String stockText = txtStock.getText().toString();
 
             if (name.isEmpty() || dosage.isEmpty() || selectedHour == -1 || selectedMinute == -1) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -120,11 +123,20 @@ public class EditMedicationActivity extends AppCompatActivity {
                 }
             }
 
+            int stock = 0;
+            if (!stockText.isEmpty()) {
+                try {
+                    stock = Integer.parseInt(stockText);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Invalid stock, using 0", Toast.LENGTH_SHORT).show();
+                }
+            }
+
             // Update DB
             med.name = name;
             med.dosage = dosage;
             med.time = String.format("%02d:%02d (every %dh)", selectedHour, selectedMinute, freq);
-
+            med.stock = stock; // UPDATE stock
             db.medicationDao().update(med);
 
             // Cancel old WorkManager job

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.room.Room;
+import androidx.work.WorkManager;
 
 public class ReminderActionReceiver extends BroadcastReceiver {
 
@@ -22,7 +23,7 @@ public class ReminderActionReceiver extends BroadcastReceiver {
         AppDatabase db = Room.databaseBuilder(
                 context,
                 AppDatabase.class, "medication-db"
-        ).allowMainThreadQueries().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         // Save log to History
         History history = new History();
@@ -34,7 +35,27 @@ public class ReminderActionReceiver extends BroadcastReceiver {
 
         db.historyDao().insert(history);
 
-        // Show quick feedback
+        // If Taken, reduce stock
+        if (action.equals("ACTION_TAKEN")) {
+            Medication med = db.medicationDao().getById(medId);
+            if (med != null) {
+                med.stock = Math.max(0, med.stock - 1); // avoid negative
+                db.medicationDao().update(med);
+
+                if (med.stock == 0) {
+                    // Cancel reminders
+                    WorkManager.getInstance(context).cancelAllWorkByTag("med_" + medId);
+
+                    // Notify user
+                    Toast.makeText(context,
+                            medName + " is out of stock. Reminders cancelled.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
+
+        // Show quick feedback for both Taken and Missed
         String msg = medName + " marked as " + history.status;
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }

@@ -23,7 +23,7 @@ public class HistoryActivity extends AppCompatActivity {
         AppDatabase db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class, "medication-db"
-        ).allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         List<History> historyList = db.historyDao().getAll();
         HistoryAdapter adapter = new HistoryAdapter(historyList);

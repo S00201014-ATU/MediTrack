@@ -38,6 +38,14 @@
             android:hint="Frequency (hours)"
             android:inputType="number" />
 
+        <!-- NEW Stock field -->
+        <EditText
+            android:id="@+id/txtStock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Number of tablets"
+            android:inputType="number" />
+
         <Button
             android:id="@+id/btnUpdateMedication"
             android:layout_width="match_parent"

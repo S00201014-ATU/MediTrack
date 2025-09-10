@@ -30,6 +30,7 @@ public class AddMedicationActivity extends AppCompatActivity {
         EditText txtDosage = findViewById(R.id.txtDosage);
         EditText txtTime = findViewById(R.id.txtTime);
         EditText txtFrequency = findViewById(R.id.txtFrequency);
+        EditText txtStock = findViewById(R.id.txtStock); // NEW field
         Button btnSaveMedication = findViewById(R.id.btnSaveMedication);
 
         // Disable manual typing into time field
@@ -56,12 +57,13 @@ public class AddMedicationActivity extends AppCompatActivity {
         AppDatabase db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class, "medication-db"
-        ).allowMainThreadQueries().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         btnSaveMedication.setOnClickListener(v -> {
             String name = txtMedicationName.getText().toString();
             String dosage = txtDosage.getText().toString();
             String freqText = txtFrequency.getText().toString();
+            String stockText = txtStock.getText().toString();
 
             if (name.isEmpty() || dosage.isEmpty() || selectedHour == -1 || selectedMinute == -1) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -78,11 +80,22 @@ public class AddMedicationActivity extends AppCompatActivity {
                 }
             }
 
+            // Parse stock (default 0)
+            int stock = 0;
+            if (!stockText.isEmpty()) {
+                try {
+                    stock = Integer.parseInt(stockText);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Invalid stock, using 0", Toast.LENGTH_SHORT).show();
+                }
+            }
+
             // Save into database and get ID
             Medication med = new Medication();
             med.name = name;
             med.dosage = dosage;
             med.time = String.format("%02d:%02d (every %dh)", selectedHour, selectedMinute, frequencyHours);
+            med.stock = stock; // NEW
             long medId = db.medicationDao().insert(med); // returns new row ID
             int medIdInt = (int) medId;
 

@@ -39,20 +39,18 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
         holder.txtMedName.setText(med.name);
         holder.txtMedDetails.setText(med.dosage + " at " + med.time);
+        holder.txtStock.setText("Stock: " + med.stock);
 
         // Delete button
         holder.btnDelete.setOnClickListener(v -> {
-            // Cancel WorkManager jobs for this medication
             WorkManager.getInstance(context).cancelAllWorkByTag("med_" + med.id);
 
-            // Delete from database
             AppDatabase db = Room.databaseBuilder(
                     context,
                     AppDatabase.class, "medication-db"
-            ).allowMainThreadQueries().build();
+            ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
             db.medicationDao().deleteById(med.id);
 
-            // Remove from list and refresh RecyclerView
             medications.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, medications.size());
@@ -72,13 +70,14 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     }
 
     static class MedicationViewHolder extends RecyclerView.ViewHolder {
-        TextView txtMedName, txtMedDetails;
+        TextView txtMedName, txtMedDetails, txtStock;
         Button btnDelete, btnEdit;
 
         public MedicationViewHolder(@NonNull View itemView) {
             super(itemView);
             txtMedName = itemView.findViewById(R.id.txtMedName);
             txtMedDetails = itemView.findViewById(R.id.txtMedDetails);
+            txtStock = itemView.findViewById(R.id.txtMedStock); // NEW
             btnDelete = itemView.findViewById(R.id.btnDelete);
             btnEdit = itemView.findViewById(R.id.btnEdit);
         }
