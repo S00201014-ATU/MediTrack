@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/txtMedName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Medication Name"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txtMedDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dosage and Time" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete" />
+
+</LinearLayout>

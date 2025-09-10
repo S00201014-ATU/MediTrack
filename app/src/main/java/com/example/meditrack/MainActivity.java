@@ -3,15 +3,18 @@ package com.example.meditrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private MedicationAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,18 +22,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btnAddMedication = findViewById(R.id.btnAddMedication);
-        RecyclerView recyclerView = findViewById(R.id.recyclerMedications);
+        recyclerView = findViewById(R.id.recyclerMedications);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        AppDatabase db = Room.databaseBuilder(
-                getApplicationContext(),
-                AppDatabase.class, "medication-db"
-        ).allowMainThreadQueries().build();
-
-        // Load saved medications
-        List<Medication> medications = db.medicationDao().getAll();
-        adapter = new MedicationAdapter(medications);
-        recyclerView.setAdapter(adapter);
+        loadMedications();
 
         btnAddMedication.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddMedicationActivity.class);
@@ -41,15 +36,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh list after returning from AddMedicationActivity
+        loadMedications();
+    }
+
+    private void loadMedications() {
         AppDatabase db = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class, "medication-db"
         ).allowMainThreadQueries().build();
 
         List<Medication> medications = db.medicationDao().getAll();
-        adapter = new MedicationAdapter(medications);
-        RecyclerView recyclerView = findViewById(R.id.recyclerMedications);
+        adapter = new MedicationAdapter(medications, this); // pass context
         recyclerView.setAdapter(adapter);
     }
 }

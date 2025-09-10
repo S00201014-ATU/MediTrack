@@ -64,12 +64,13 @@ public class AddMedicationActivity extends AppCompatActivity {
             int hour = Integer.parseInt(timeParts[0]);
             int minute = Integer.parseInt(timeParts[1]);
 
-            // Save into database
+            // Save into database and get ID
             Medication med = new Medication();
             med.name = name;
             med.dosage = dosage;
             med.time = time + " (every " + frequencyHours + "h)";
-            db.medicationDao().insert(med);
+            long medId = db.medicationDao().insert(med); // returns new row ID
+            int medIdInt = (int) medId;
 
             // Schedule repeating reminders
             Calendar calendar = Calendar.getInstance();
@@ -94,7 +95,7 @@ public class AddMedicationActivity extends AppCompatActivity {
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                         this,
-                        (int) System.currentTimeMillis() + t, // unique request code
+                        medIdInt * 100 + t, // unique code per med and slot
                         reminderIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
                 );

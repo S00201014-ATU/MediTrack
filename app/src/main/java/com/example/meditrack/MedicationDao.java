@@ -11,9 +11,12 @@ public interface MedicationDao {
 
     // Add a new medication
     @Insert
-    void insert(Medication medication);
+    long insert(Medication medication);
 
     // Get all medications
     @Query("SELECT * FROM Medication")
     List<Medication> getAll();
+
+    @Query("DELETE FROM Medication WHERE id = :medId")
+    void deleteById(int medId);
 }
