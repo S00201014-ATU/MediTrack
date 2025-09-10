@@ -19,12 +19,19 @@
         android:layout_height="wrap_content"
         android:hint="Dosage (e.g. 1 tablet)" />
 
-    <!-- Time -->
+    <!-- Start Time -->
     <EditText
         android:id="@+id/txtTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Time (e.g. 08:00)" />
+        android:hint="Start Time (e.g. 08:00)" />
+
+    <!-- Frequency -->
+    <EditText
+        android:id="@+id/txtFrequency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Repeat every X hours (e.g. 8)" />
 
     <!-- Save button -->
     <Button
