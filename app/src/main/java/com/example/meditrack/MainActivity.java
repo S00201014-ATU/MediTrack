@@ -1,6 +1,7 @@
 package com.example.meditrack;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -19,6 +20,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ✅ Check first run
+        SharedPreferences prefs = getSharedPreferences("MediTrackPrefs", MODE_PRIVATE);
+        boolean firstRun = prefs.getBoolean("firstRun", true);
+        if (firstRun) {
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         Button btnAddMedication = findViewById(R.id.btnAddMedication);
