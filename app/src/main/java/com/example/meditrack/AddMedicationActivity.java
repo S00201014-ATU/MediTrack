@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 public class AddMedicationActivity extends AppCompatActivity {
 
@@ -18,16 +20,31 @@ public class AddMedicationActivity extends AppCompatActivity {
         EditText txtTime = findViewById(R.id.txtTime);
         Button btnSaveMedication = findViewById(R.id.btnSaveMedication);
 
-        // When Save is clicked, show entered details in a message
+        // Build database
+        AppDatabase db = Room.databaseBuilder(
+                getApplicationContext(),
+                AppDatabase.class, "medication-db"
+        ).allowMainThreadQueries().build();
+
         btnSaveMedication.setOnClickListener(v -> {
             String name = txtMedicationName.getText().toString();
             String dosage = txtDosage.getText().toString();
             String time = txtTime.getText().toString();
 
-            String message = "Saved: " + name + " - " + dosage + " at " + time;
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            if (name.isEmpty() || dosage.isEmpty() || time.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // For now, just close the screen
+            // Save into database
+            Medication med = new Medication();
+            med.name = name;
+            med.dosage = dosage;
+            med.time = time;
+
+            db.medicationDao().insert(med);
+
+            Toast.makeText(this, "Medication saved", Toast.LENGTH_SHORT).show();
             finish();
         });
     }
