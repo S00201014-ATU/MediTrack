@@ -72,22 +72,36 @@ public class ReminderWorker extends Worker {
 
         PendingIntent missedPendingIntent = PendingIntent.getBroadcast(
                 context,
-                medId + 10000, // ensure different request code
+                medId + 500, // offset for uniqueness
                 missedIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        // Build notification with action buttons
+        // Intent for "Snooze"
+        Intent snoozeIntent = new Intent(context, ReminderResponseReceiver.class);
+        snoozeIntent.setAction("ACTION_SNOOZE");
+        snoozeIntent.putExtra("medId", medId);
+        snoozeIntent.putExtra("medName", medName);
+        snoozeIntent.putExtra("dosage", dosage);
+
+        PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(
+                context,
+                medId + 1000, // unique offset
+                snoozeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        // Build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setContentTitle("Time to take " + medName)
-                .setContentText("Dosage: " + dosage)
-                .setSmallIcon(R.drawable.ic_launcher_foreground) // TODO: replace with pill icon
+                .setSmallIcon(android.R.drawable.ic_popup_reminder) // system reminder icon
+                .setContentTitle("Medication Reminder")
+                .setContentText(medName + " - " + dosage)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
-                .addAction(R.drawable.ic_launcher_foreground, "Taken", takenPendingIntent)
-                .addAction(R.drawable.ic_launcher_foreground, "Missed", missedPendingIntent);
+                .addAction(android.R.drawable.checkbox_on_background, "Taken", takenPendingIntent)
+                .addAction(android.R.drawable.ic_delete, "Missed", missedPendingIntent)
+                .addAction(android.R.drawable.ic_media_pause, "Snooze", snoozePendingIntent);
 
-        // Show notification (medId makes each notification unique)
         notificationManager.notify(medId, builder.build());
     }
 }
