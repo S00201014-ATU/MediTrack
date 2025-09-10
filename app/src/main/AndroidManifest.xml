@@ -12,15 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MediTrack"
         tools:targetApi="31">
+
+        <!-- Main screen -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Add Medication screen -->
+        <activity
+            android:name=".AddMedicationActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

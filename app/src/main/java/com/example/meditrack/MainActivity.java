@@ -1,5 +1,6 @@
 package com.example.meditrack;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,5 +20,10 @@ public class MainActivity extends AppCompatActivity {
         btnAddMedication.setOnClickListener(v ->
                 Toast.makeText(this, "Add medication clicked", Toast.LENGTH_SHORT).show()
         );
+
+        btnAddMedication.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddMedicationActivity.class);
+            startActivity(intent);
+        });
     }
 }
