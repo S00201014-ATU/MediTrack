@@ -1,11 +1,14 @@
 package com.example.meditrack;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -31,12 +34,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         History history = historyList.get(position);
 
-        String date = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        // Format timestamp
+        String formattedDate = new SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
                 .format(new Date(history.timestamp));
 
+        // Medication + dosage
         holder.txtMedName.setText(history.name + " - " + history.dosage);
+
+        // Status with colour
         holder.txtStatus.setText(history.status);
-        holder.txtDate.setText(date);
+        if ("Taken".equals(history.status)) {
+            holder.txtStatus.setTextColor(Color.parseColor("#2E7D32")); // Green
+        } else {
+            holder.txtStatus.setTextColor(Color.parseColor("#C62828")); // Red
+        }
+
+        // Timestamp
+        holder.txtDate.setText(formattedDate);
     }
 
     @Override

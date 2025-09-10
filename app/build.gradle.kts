@@ -47,6 +47,9 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
 
+    // WorkManager (for scheduling reminders reliably)
+    implementation("androidx.work:work-runtime:2.9.0")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
