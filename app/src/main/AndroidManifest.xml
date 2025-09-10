@@ -34,8 +34,11 @@
             android:name=".AddMedicationActivity"
             android:exported="false" />
 
-        <!-- Reminder Receiver for notifications -->
+        <!-- Reminder Receiver for showing notifications -->
         <receiver android:name=".ReminderReceiver" />
+
+        <!-- Receiver for Taken / Missed actions -->
+        <receiver android:name=".ReminderResponseReceiver" />
 
     </application>
 
