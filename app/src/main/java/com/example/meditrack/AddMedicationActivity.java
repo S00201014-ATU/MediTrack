@@ -1,5 +1,8 @@
 package com.example.meditrack;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,10 +44,28 @@ public class AddMedicationActivity extends AppCompatActivity {
             med.name = name;
             med.dosage = dosage;
             med.time = time;
-
             db.medicationDao().insert(med);
 
-            Toast.makeText(this, "Medication saved", Toast.LENGTH_SHORT).show();
+            // --- Schedule reminder (currently 5 seconds later for testing) ---
+            long triggerTime = System.currentTimeMillis() + 5000; // TODO: replace with parsed time
+
+            Intent reminderIntent = new Intent(this, ReminderReceiver.class);
+            reminderIntent.putExtra("name", name);
+            reminderIntent.putExtra("dosage", dosage);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this,
+                    (int) System.currentTimeMillis(), // unique request code
+                    reminderIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            if (alarmManager != null) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+            }
+
+            Toast.makeText(this, "Medication saved with reminder", Toast.LENGTH_SHORT).show();
             finish();
         });
     }
