@@ -1,6 +1,7 @@
 package com.example.meditrack;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         holder.txtMedName.setText(med.name);
         holder.txtMedDetails.setText(med.dosage + " at " + med.time);
 
+        // Delete button
         holder.btnDelete.setOnClickListener(v -> {
             // Cancel WorkManager jobs for this medication
             WorkManager.getInstance(context).cancelAllWorkByTag("med_" + med.id);
@@ -55,6 +57,13 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, medications.size());
         });
+
+        // Edit button
+        holder.btnEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditMedicationActivity.class);
+            intent.putExtra("medId", med.id);
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -64,13 +73,14 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
     static class MedicationViewHolder extends RecyclerView.ViewHolder {
         TextView txtMedName, txtMedDetails;
-        Button btnDelete;
+        Button btnDelete, btnEdit;
 
         public MedicationViewHolder(@NonNull View itemView) {
             super(itemView);
             txtMedName = itemView.findViewById(R.id.txtMedName);
             txtMedDetails = itemView.findViewById(R.id.txtMedDetails);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
         }
     }
 }

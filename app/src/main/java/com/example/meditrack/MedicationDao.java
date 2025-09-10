@@ -3,6 +3,7 @@ package com.example.meditrack;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -19,4 +20,11 @@ public interface MedicationDao {
 
     @Query("DELETE FROM Medication WHERE id = :medId")
     void deleteById(int medId);
+
+    @Update
+    void update(Medication medication);
+
+    @Query("SELECT * FROM Medication WHERE id = :id LIMIT 1")
+    Medication getById(int id);
+
 }

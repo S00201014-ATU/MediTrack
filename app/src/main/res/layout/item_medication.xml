@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:padding="12dp">
 
+    <!-- Medication name -->
     <TextView
         android:id="@+id/txtMedName"
         android:layout_width="wrap_content"
@@ -12,16 +13,33 @@
         android:textStyle="bold"
         android:textSize="18sp" />
 
+    <!-- Medication details -->
     <TextView
         android:id="@+id/txtMedDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dosage and Time" />
+        android:text="Dosage and Time"
+        android:textSize="14sp"
+        android:paddingTop="2dp" />
 
-    <Button
-        android:id="@+id/btnDelete"
+    <!-- Action buttons -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete" />
+        android:orientation="horizontal"
+        android:paddingTop="6dp">
 
+        <Button
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
 </LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/txtMedicationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Medication Name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/txtDosage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Dosage"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/txtTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Time (HH:mm)"
+            android:focusable="false"
+            android:clickable="true" />
+
+        <EditText
+            android:id="@+id/txtFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Frequency (hours)"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btnUpdateMedication"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Medication" />
+
+    </LinearLayout>
+</ScrollView>
